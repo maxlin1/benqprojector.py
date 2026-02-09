@@ -14,7 +14,7 @@ jobs:
           configuration: "--profile black --check-only"
           requirements-files: "requirements.txt"
       - name: Check files using the black formatter
-        uses: psf/black
+        uses: psf/black@stable
         with:
           options: "--check"
           src: "."
