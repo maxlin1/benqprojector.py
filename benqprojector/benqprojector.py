@@ -39,6 +39,7 @@ from .benqconnection import (
     BenQTelnetConnection,
 )
 from .task_helper import save_task_reference
+from json.decoder import JSONDecodeError
 
 logger = logging.getLogger(__name__)
 
@@ -170,34 +171,37 @@ class BenQProjector(ABC):
         """
         return self._connection_lock.locked()
 
-    def _read_config(self, model: str):
+    async def _read_config(self, model: str) -> dict | None:
         model_filename = (
             "".join(c if c.isalnum() or c in "._-" else "_" for c in model.lower())
             + ".json"
         )
         logger.info("Using model file %s", model_filename)
 
-        with importlib.resources.open_text(
-            "benqprojector.configs", model_filename
-        ) as file:
-            return json.load(file)
+        text = await asyncio.get_running_loop().run_in_executor(
+            None, importlib.resources.read_text, "benqprojector.configs", model_filename
+        )
+        
+        try:
+            if text is not None and len(text) > 0:
+                return json.load(text)
+            else:
+                logger.debug("No or empty read config file %s", model_filename)
+        except JSONDecodeError:
+            logger.error("Invalid config file %s", model_filename)
 
         return None
 
-    async def get_config(self, key):
+    async def get_config(self, key: str):
         """
         Get the config for the given key.
         """
         if not self.projector_config_all:
-            self.projector_config_all = await self._loop.run_in_executor(
-                None, self._read_config, "all"
-            )
+            self.projector_config_all = await self._read_config("all")
 
         if not self.projector_config and self.model:
             try:
-                self.projector_config = await self._loop.run_in_executor(
-                    None, self._read_config, self.model
-                )
+                self.projector_config = await self._read_config(self.model)
             except FileNotFoundError:
                 pass
 
