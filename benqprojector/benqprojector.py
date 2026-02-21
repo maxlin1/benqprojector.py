@@ -262,15 +262,14 @@ class BenQProjector(ABC):
                 "Failed to get projector command prompt, is your projector properly connected?"
             )
             return False
-        except BenQBlockedItemError as ex:
-            logger.error(
-                "Unable to retrieve projector power state, is projector powering down? %s",
-                ex,
+        except BenQBlockedItemError:
+            logger.exception(
+                "Unable to retrieve projector power state, is projector powering down?"
             )
         except BenQEmptyResponseError as ex:
             logger.warning(ex)
-        except BenQProjectorError as ex:
-            logger.error("Unable to retrieve projector power state: %s", ex)
+        except BenQProjectorError:
+            logger.exception("Unable to retrieve projector power state.")
             return False
 
         model = None
@@ -279,25 +278,23 @@ class BenQProjector(ABC):
                 BenQCommand(CMD_MODELNAME), lowercase_response=False
             )
             assert model is not None, "Failed to retrieve projector model"
-        except BenQIllegalFormatError as ex:
+        except BenQIllegalFormatError:
             # W1000 does not seem to return projector model, but gives an illegal
             # format error. Maybe there are other models with the same problem?
-            logger.error("Unable to retrieve projector model")
-        except BenQBlockedItemError as ex:
+            logger.exception("Unable to retrieve projector model")
+        except BenQBlockedItemError:
             # W1070/W1250 does not seem to return projector model when off, but gives
             # an blocked item error. Maybe there are other models with the same problem?
             if power == "off":
-                logger.error(
-                    "Unable to retrieve projector model while projector is %s: %s",
+                logger.exception(
+                    "Unable to retrieve projector model while projector is %s",
                     power,
-                    ex,
                 )
             else:
                 # It could also be that the projector is powering down
-                logger.error(
-                    "Unable to retrieve projector model while projector is %s, is projector powering down? %s",
+                logger.exception(
+                    "Unable to retrieve projector model while projector is %s, is projector powering down?",
                     power,
-                    ex,
                 )
 
         if (
@@ -988,13 +985,12 @@ class BenQProjector(ABC):
             response = await self._send_command(BenQCommand(CMD_POWER))
             if response is None:
                 logger.error("Failed to retrieve projector power state.")
-        except BenQBlockedItemError as ex:
-            logger.error(
-                "Unable to retrieve projector power state, is projector already powering down? %s",
-                ex,
+        except BenQBlockedItemError:
+            logger.exception(
+                "Unable to retrieve projector power state, is projector already powering down?",
             )
-        except BenQProjectorError as ex:
-            logger.error("Unable to retrieve projector power state: %s", ex)
+        except BenQProjectorError:
+            logger.exception("Unable to retrieve projector power state.")
             return False
 
         if response == "on":
@@ -1031,12 +1027,11 @@ class BenQProjector(ABC):
                     self._power_timestamp = time.time()
 
                     return True
-            except BenQBlockedItemError as ex:
-                logger.error(
-                    "Failed to turn on projector, is projector already powering on or off? %s",
-                    ex,
+            except BenQBlockedItemError:
+                logger.exception(
+                    "Failed to turn on projector, is projector already powering on or off?"
                 )
-            except BenQProjectorError as ex:
+            except BenQProjectorError:
                 pass
 
             logger.error("Failed to turn on projector, response: %s", response)
@@ -1055,13 +1050,12 @@ class BenQProjector(ABC):
             response = await self._send_command(BenQCommand(CMD_POWER))
             if response is None:
                 logger.error("Failed to retrieve projector power state.")
-        except BenQBlockedItemError as ex:
-            logger.error(
-                "Unable to retrieve projector power state, is projector already powering down? %s",
-                ex,
+        except BenQBlockedItemError:
+            logger.exception(
+                "Unable to retrieve projector power state, is projector already powering down?"
             )
-        except BenQProjectorError as ex:
-            logger.error("Unable to retrieve projector power state: %s", ex)
+        except BenQProjectorError:
+            logger.exception("Unable to retrieve projector power state.")
             return False
 
         if response == "off":
@@ -1098,12 +1092,11 @@ class BenQProjector(ABC):
                     self._power_timestamp = time.time()
 
                     return True
-            except BenQBlockedItemError as ex:
-                logger.error(
-                    "Failed to turn off projector, is projector already powering on or off? %s",
-                    ex,
+            except BenQBlockedItemError:
+                logger.exception(
+                    "Failed to turn off projector, is projector already powering on or off? %s"
                 )
-            except BenQProjectorError as ex:
+            except BenQProjectorError:
                 pass
 
             logger.error("Failed to turn off projector, response: %s", response)
