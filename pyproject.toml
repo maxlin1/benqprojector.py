@@ -33,7 +33,6 @@ Homepage = "https://github.com/rrooggiieerr/benqprojector.py"
 Issues = "https://github.com/rrooggiieerr/benqprojector.py/issues"
 [tool.isort]
 profile = "black"
-[tool.black]
 [tool.pylint]
 recursive = "y"
 [tool.mypy]
