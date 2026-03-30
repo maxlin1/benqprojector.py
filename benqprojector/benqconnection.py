@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 # Timeout in seconds
 _SERIAL_TIMEOUT = 0.05
-_TELNET_TIMEOUT = 0.2
+_TELNET_TIMEOUT = 1.0
 
 DEFAULT_PORT = 8000
 
