@@ -584,7 +584,7 @@ class BenQProjector(ABC):
             if (datetime.now() - start_time).total_seconds() > 1:
                 raise BenQPromptTimeoutError()
 
-            await asyncio.sleep(0.05)
+            await asyncio.sleep(1)
 
         logger.warning("Prompt not detected")
         return False
