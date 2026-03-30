@@ -1,10 +1,13 @@
 [build-system]
 requires = ["hatchling>=1.24", "hatch-vcs"]
 build-backend = "hatchling.build"
+
 [tool.hatch.build.hooks.vcs]
 version-file = "benqprojector/_version.py"
+
 [tool.hatch.version]
 source = "vcs"
+
 [project]
 name = "benqprojector"
 dynamic = ["version"]
@@ -31,21 +34,27 @@ dependencies = [
     "pyserial-asyncio-fast>=0.16",
     "aiofiles>=25.1.0",
 ]
+
 [project.urls]
 Homepage = "https://github.com/rrooggiieerr/benqprojector.py"
 Issues = "https://github.com/rrooggiieerr/benqprojector.py/issues"
+
 [tool.isort]
 # https://github.com/PyCQA/isort/wiki/isort-Settings
 profile = "black"
 skip = "benqprojector/_version.py"
+
 [tool.black]
 exclude = "benqprojector/_version.py"
+
 [tool.pylint]
 ignore = "_version.py"
 recursive = "y"
+
 [tool.mypy]
 python_version = "3.11"
 mypy_path = "benqprojector"
+
 [[tool.mypy.overrides]]
 module = ["serial.*", "*._version"]
 ignore_missing_imports = true
